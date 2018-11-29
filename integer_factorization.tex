@@ -16,6 +16,8 @@
 \newtheorem{defn}[thm]{Definition}
 \newtheorem{exmp}[thm]{Example}
 \newtheorem{prob}[thm]{Problem}
+\newtheorem{algo}[thm]{Algorithm}
+
 
 \begin {document}
 
@@ -83,7 +85,27 @@ If $n$ is composite, one of its factors is smaller than or equal to $\sqrt{n}$.
 Since $n$ is composite, it can be written as $n = ab$. Assume that $a > \sqrt{n}$ and $b > \sqrt{n}$. Now $ab > \sqrt{n}^2 \implies ab > n$, which is a contradiction. Therefore either $a$ or $b$ must be $\leq \sqrt{n}$.
 \end{proof}
 
-According to Proposition \ref{prop:factupperbound}, it suffices to try out the integers from $2$ to $\sqrt{n}$ inclusive. If at this point we have not found a divisor, there is none. Now we do only $\sqrt{n}$ steps in the worst case, and the time complexity of the improved algorithm is $O(\sqrt{n})$.
+According to Proposition \ref{prop:factupperbound}, it suffices to try out the integers from $2$ to $\sqrt{n}$ inclusive. If at this point we have not found a divisor, there are none. Now we do only $\sqrt{n}$ steps in the worst case, and the time complexity of the improved algorithm is $O(\sqrt{n})$. There is still room for improvement.
+
+\begin{prop}
+\label {prop:primes6pm1}
+All primes $p$ except $2$ and $3$ are of the form $6k \pm 1$ for some integer $k$.
+\end{prop}
+
+\begin{proof}
+All integers can be represented as $6k + m$ for some integers $k$ and $0 \leq m < 6$. $6k + 0$ is divisible by 6. $6k + 2$ and $6k + 4$ are divisible by 2. $6k + 3$ is divisible by 3. All primes are therefore of the form $6k + 1$ or $6k + 5 \equiv 6k - 1 \mod 6$.
+\end{proof}
+
+We can use Proposition \ref{prop:primes6pm1} to reduce the amount of required divisions by only trying $2$, $3$ and the numbers of the form $6k \pm 1$. Here is our final trial division algorithm:
+\begin{algo} (Trial division)
+\begin{enumerate}
+\item Check if $2$ or $3$ divide $n$.
+\item Iterate all integers of the form $6k \pm 1$ up to and including $\sqrt{n}$ and check if one of them divides $n$.
+\item If no divisor was found, report failure.
+\end{enumerate}
+\end{algo}
+
+The time complexity of this algorithm is still $O(\sqrt{n})$, but it has a smaller constant factor than the previous one due to a reduced number of divisions.
 
 \subsection {Sieve of Eratosthenes}
 
