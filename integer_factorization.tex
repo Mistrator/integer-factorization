@@ -1,0 +1,53 @@
+\documentclass[12pt] {article}
+\usepackage[utf8] {inputenc}
+\usepackage {amsmath}
+\usepackage {amssymb}
+\usepackage {amsthm}
+\usepackage {mathtools}
+
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example}
+
+
+\begin {document}
+
+\title {Integer Factorization}
+\author {Miska Kananen}
+\date {\today}
+\maketitle
+
+\tableofcontents
+
+\section {Introduction}
+
+We will define the problem of integer factorization and present some applications for efficient factorization. Then we will look at some trivial and some more efficient factorization algorithms, namely Pollard's Rho algorithm and the linear sieve, and implement them in practice.
+
+\subsection {The definition}
+
+\begin{defn} (Integer Factorization problem)
+Let $n$ be a positive integer. Find an integer $a$ $(1 < a < n)$ such that $n = ab$ for some positive integer $b$ or report that such integer does not exist. We call $a$ a \textit{factor} of $n$ and the product $ab$ a \textit{factorization} of $n$.
+\end{defn}
+
+If there exists a factorization of $n$, $n$ is \textit{composite}. Otherwise $n$ is \textit{prime} (or equals $1$, in case of which it is neither). Note that it is not required $a$ to be prime. 
+
+\begin{exmp} (Factorization)
+Let $n = 36$. We can write $n = 4 \cdot 9$. Here $4$ is a factor of $36$ and the product $4 \cdot 9$ is a factorization of $36$.
+\end{exmp}
+
+\subsection {Applications}
+
+\section {Trivial algorithms}
+
+\section {Pollard's Rho algorithm}
+
+\section {Linear sieve}
+
+\section {References}
+
+\end {document}

@@ -1,0 +1,18 @@
+- topics:
+	- brute algs:
+		- trial division
+		- sieve of eratosthenes
+	- pollard-rho
+	- linear sieve
+
+- introduction:
+	- definition of integer factorization
+	- description of applications
+- trivial algorithms:
+	- trial division
+	- sieve of eratosthenes
+- faster algorithms:
+	- pollard-rho
+	- linear sieve
+- note on quantum factorization?
+- references
