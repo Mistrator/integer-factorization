@@ -30,7 +30,7 @@
 
 \section {Introduction}
 
-We will define the problem of integer factorization and present some applications for efficient factorization. Then we will look at some trivial and some more efficient factorization algorithms, namely Pollard's Rho algorithm and the linear sieve, and implement them in practice.
+We will define the problem of integer factorization and present some applications of efficient factorization. Then we will look at some basic and some more efficient factorization algorithms, namely Pollard's Rho algorithm and the linear sieve, and implement them in practice.
 
 \subsection {Definitions}
 
@@ -38,7 +38,7 @@ We will define the problem of integer factorization and present some application
 Let $n$ be a positive integer. Find an integer $a$ $(1 < a < n)$ such that $n = ab$ for some positive integer $b$ or report that such integer does not exist. We call $a$ a \textit{factor} of $n$ and the product $ab$ a \textit{factorization} of $n$.
 \end{defn}
 
-If there exists a factorization of $n$, $n$ is \textit{composite}. Otherwise $n$ is \textit{prime} (or equals $1$, in case of which it is neither). Note that it is not required for $a$ to be prime. 
+If there exists a factorization of $n$, $n$ is \textit{composite}. Otherwise $n$ is \textit{prime} (or equals $1$, in case of which it is neither). Note that it is not required that $a$ is prime.
 
 \begin{exmp} (Factorization)
 Let $n = 36$. We can write $n = 4 \cdot 9$. Here $4$ is a factor of $36$ and the product $4 \cdot 9$ is a factorization of $36$.
@@ -72,7 +72,7 @@ In this section we look at some easy, but slightly inefficient algorithms for so
 
 \subsection {Trial division}
 
-The most trivial way to solve \textit{factor(n)} is to iterate all integers in range $\{2, 3, \dots, (n-1)\}$ and try whether one of them divides $n$. In this case, we have found a factor of $n$. This kind of algorithm is called \textit{trial division}. 
+The easiest way to solve \textit{factor(n)} is to iterate all integers in range $\{2, 3, \dots, (n-1)\}$ and try whether one of them divides $n$. In this case, we have found a factor of $n$. This kind of algorithm is called \textit{trial division}. 
 
 The correctness of the algorithm is easy to see: every possible factor of $n$ is tried, and therefore if one exists, it will be found. The number of divisions done by the algorithm is in the worst case linear to the size of $n$, and the time complexity of the algorithm is thus $O(n)$. However, we can do better.
 
@@ -93,7 +93,7 @@ All primes $p$ except $2$ and $3$ are of the form $6k \pm 1$ for some integer $k
 \end{prop}
 
 \begin{proof}
-All integers can be represented as $6k + m$ for some integers $k$ and $0 \leq m < 6$. $6k + 0$ is divisible by 6. $6k + 2$ and $6k + 4$ are divisible by 2. $6k + 3$ is divisible by 3. All primes are therefore of the form $6k + 1$ or $6k + 5 \equiv 6k - 1 \mod 6$.
+All integers can be represented as $6k + m$ for some integers $k$ and $0 \leq m < 6$. $6k + 0$ is divisible by 6. $6k + 2$ and $6k + 4$ are divisible by 2. $6k + 3$ is divisible by 3. Thus, all primes must be of the form $6k + 1$ or $6k + 5 \equiv 6k - 1 \mod 6$.
 \end{proof}
 
 We can use Proposition \ref{prop:primes6pm1} to reduce the amount of required divisions by only trying $2$, $3$ and the numbers of the form $6k \pm 1$. Here is our final trial division algorithm:
@@ -101,7 +101,7 @@ We can use Proposition \ref{prop:primes6pm1} to reduce the amount of required di
 \begin{enumerate}
 \item Check if $2$ or $3$ divide $n$.
 \item Iterate all integers of the form $6k \pm 1$ up to and including $\sqrt{n}$ and check if one of them divides $n$.
-\item If no divisor was found, report failure.
+\item If no divisor was found in steps 1 and 2, report that there are none.
 \end{enumerate}
 \end{algo}
 
