@@ -5,9 +5,13 @@
 \usepackage {amssymb}
 \usepackage {amsthm}
 \usepackage {mathtools}
+\usepackage {listings}
+\usepackage {color}
 \usepackage[backend=biber] {biblatex}
 
 \addbibresource{bibliography.bib}
+
+\lstset{basicstyle=\footnotesize, keywordstyle=\color{blue}, commentstyle=\color{green}, breaklines=true, numbers=left, frame=single}
 
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
@@ -178,19 +182,23 @@ The integer to be factored is $n$ and function used to generate the pseudorandom
 \begin{enumerate}
 \item Choose a starting value $s$ from range $1 \dots (n-1)$ and assign $t = f(s)$, $h = f(f(s))$.
 \item While $\gcd(h-t, n) = 1$, repeat $t = f(t)$, $h = f(f(h))$.
-\item If at this point $t = h$, the algorithm failed to find a factor. Start from beginning with a different $s$.
+\item If at this point $\gcd(h-t, n) = n$, the algorithm failed to find a factor. Start from beginning with a different $s$.
 \item Otherwise we found a factor $\gcd(h-t, n)$, return it.
 \end{enumerate}
 \end{algo}
 
-There are some special cases that are important to notice.
+There are some points that are important to notice.
 
 \begin{itemize}
+\item The factor found by the algorithm is not necessarily prime.
 \item If $n$ is prime, the algorithm might not terminate.
 \item If $n$ is a perfect square ($n = m^2$ for some integer m), the algorithm might not terminate.
+\item Depending on the choice of $f$, the algorithm might fail to find certain factors: for example the usual choice $f(x) = x^2 + 1$ fails to find the factor 2\cite{pollardfail}.
 \end{itemize}
 
 \subsection {Implementation}
+
+\lstinputlisting[language=Python]{src/pollardrho.py}
 
 \section {Linear sieve}
 
