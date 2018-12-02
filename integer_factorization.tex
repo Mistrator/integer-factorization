@@ -1,9 +1,13 @@
 \documentclass[12pt] {article}
 \usepackage[utf8] {inputenc}
+\usepackage[english] {babel}
 \usepackage {amsmath}
 \usepackage {amssymb}
 \usepackage {amsthm}
 \usepackage {mathtools}
+\usepackage[backend=biber] {biblatex}
+
+\addbibresource{bibliography.bib}
 
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
@@ -111,8 +115,33 @@ The time complexity of this algorithm is still $O(\sqrt{n})$, but it has a small
 
 \section {Pollard's Rho algorithm}
 
+Pollard's Rho algorithm is a randomized Monte Carlo algorithm that solves \textit{factor(n)} in $O(\sqrt[4]{n})$ average.
+
+\subsection {Theory}
+
+Assume $n$ is a composite integer and $n = ab$ for some integers $a, b$ $(1 < a, b < n)$. Without loss of generality, assume $a \leq b$. What kind of a randomized approach we could use to factorize $n$?
+
+The first approach could be to randomly generate integers $x_1, x_2, \dots, x_k$ from range $2 \dots (n-1)$ and try if one of them divides $n$. There are $n-2$ integers in the range and if $n$ is a product of two primes, the probability of finding a divisor is $\frac{2}{n-2}$. Therefore it takes roughly $n$ attempts to find a divisor this way.
+
+We can do better. Instead of trying to find an integer $x_i$ that divides $n$, we can try to find an integer for which $\gcd(x_i, n) > 1$. In this case the greatest common divisor is a non-trivial factor of $n$. $\gcd(x_i, n) > 1$ for all multiples $a, 2a, \dots, (b-1)a, b, 2p, \dots, (a-1)b$ and there are $a + b - 2$ such multiples. The probability of finding such an integer is $\frac{a+b-2}{n} \approx \frac{\sqrt{n}}{n} = \frac{1}{\sqrt{n}}$ in the worst case when all factors are approximately equal, and thus it takes roughly $\sqrt{n}$ attempts to find a divisor.
+
+Now we are on par with the trial division. To improve the algorithm further, we need to explore the concept of \textit{birthday paradox}.
+
+\begin{prop} (Birthday paradox)
+\label {prop:birthdayparadox}
+When uniformly generating random integers $x_1, x_2, \dots, x_k$ from the range $1 \dots n$, we need to generate approximately $O(\sqrt{n})$ integers for the probability that two of the generated integers are equal to reach $0.5$.
+\end{prop}
+
+\begin{proof}
+Proved in CLRS\cite{clrs}, chapter 5.4.1.
+\end{proof}
+
+\subsection {Implementation}
+
 \section {Linear sieve}
 
 \section {References}
+
+\printbibliography
 
 \end {document}
