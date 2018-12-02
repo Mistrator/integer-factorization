@@ -121,7 +121,7 @@ Pollard's Rho algorithm is a randomized Monte Carlo algorithm that solves \texti
 
 Assume $n$ is a composite integer and $n = ab$ for some integers $a, b$ $(1 < a, b < n)$. Without loss of generality, assume $a \leq b$. What kind of a randomized approach we could use to factorize $n$?
 
-The first approach could be to randomly generate integers $x_1, x_2, \dots, x_k$ from range $2 \dots (n-1)$ and try if one of them divides $n$. There are $n-2$ integers in the range and if $n$ is a product of two primes, the probability of finding a divisor is $\frac{2}{n-2}$. Therefore it takes roughly $n$ attempts to find a divisor this way.
+The first approach could be to randomly generate a sequence of integers $x_1, x_2, \dots, x_k$ from range $2 \dots (n-1)$ and try if one of them divides $n$. There are $n-2$ integers in the range and if $n$ is a product of two primes, the probability of finding a divisor is $\frac{2}{n-2}$. Therefore it takes roughly $n$ attempts to find a divisor this way.
 
 We can do better. Instead of trying to find an integer $x_i$ that divides $n$, we can try to find an integer for which $\gcd(x_i, n) > 1$. In this case the greatest common divisor is a non-trivial factor of $n$. $\gcd(x_i, n) > 1$ for all multiples $a, 2a, \dots, (b-1)a, b, 2p, \dots, (a-1)b$ and there are $a + b - 2$ such multiples. The probability of finding such an integer is $\frac{a+b-2}{n} \approx \frac{\sqrt{n}}{n} = \frac{1}{\sqrt{n}}$ in the worst case when all factors are approximately equal, and thus it takes roughly $\sqrt{n}$ attempts to find a divisor.
 
@@ -136,11 +136,63 @@ When uniformly generating random integers $x_1, x_2, \dots, x_k$ from the range 
 Proved in CLRS\cite{clrs}, chapter 5.4.1.
 \end{proof}
 
+We will utilize the birthday paradox as follows. When randomly generating the integers $x_1, x_2, \dots, x_k$, we will check for all pairs $(x_i, x_j)$ if $\gcd(x_i - x_j, n) > 1$. How soon can we expect to find a suitable pair?
+
+When generating the sequence $x_i$, we are also implicitly generating an induced sequence $x'_i = x_i \mod a$. If we manage to generate two integers $(x_i, x_j)$ such that $x'_i \equiv x'_j \mod a$, then $a$ divides $(x'_i-x'_j)$ and it must hold that $\gcd(x_i-x_j, n) > 1$. Thus, the question reduces to finding how soon we can expect that $x'_i \equiv x'_j \mod a$.
+
+We assumed that $a \leq b$, so according to Proposition \ref{prop:factupperbound} $a \leq \sqrt{n}$. So, we are generating random integers $x'_i$ in range $1 \dots \sqrt{n}$, and according to the birthday paradox we will likely find two equal integers with $O(\sqrt{\sqrt{n}}) = O(\sqrt[4]{n})$ generated integers.
+
+However, we have a problem. To check if there is a repetition in a list of $k$ integers, we have to do approximately $k^2$ pairwise comparisons. If we implemented the algorithm this way, the time complexity would be still $O(\sqrt{n})$.
+
+Instead of assuming a perfect random number generator, we will use a \textit{pseudorandom number generator}, which is a function that maps each integer to another seemingly random number, generating a sequence of apparently random integers. For our purposes, the recommended function is a polynomial of the form
+
+\[
+	f(x) = (x^2 + c) \mod n
+\]
+
+where $c$ is an arbitrary integer constant. The usual choice is $c = 1$. Values $c = 0$ and $c = -2$ are not recommended \cite{pollard}.
+
+Using the function, we can generate the sequence from a starting value $x_1$ as follows: $x_2 = f(x_1), x_3 = f(x_2)$ and in general, $x_{k+1} = f(x_k)$.
+
+Since we are taking the values mod $n$, we will find a repeated value at some point. Also, since each value depends only on the previous one, the sequence will enter a cycle after encountering a repeated value. The same properties hold for the induced sequence too, as proven in CLRS\cite{clrs}, chapter 31.9.
+
+The average number of steps before entering a cycle is equal to the number of steps before the first repetition in the sequence, which we showed earlier to be approximately O($\sqrt{n}$) for the $x_i$-sequence and O($\sqrt[4]{n}$) for the $x'_i$-sequence.
+
+So, if the $x'_i$-sequence enters a cycle, we have found a factor of $n$. However, if the $x_i$-sequence enters a cycle at the same time, the obtained factor is $n$, which is not useful. In this case, we have to change the initial values.
+
+How can we detect if a sequence has entered a cycle when we don't store the earlier values of the sequence? We need \textit{Floyd's algorithm}\cite{cphb}.
+
+\begin{algo} (Floyd's algorithm)
+\begin{enumerate}
+\item Initialize two pointers, $t$ and $h$, pointing at the first element of the sequence.
+\item Advance $t$ by one step and $h$ by two steps as long as they haven't met again.
+\item When $t = h$, we are in a cycle.
+\end{enumerate}
+\end{algo}
+
+In Pollard's Rho algorithm we will use Floyd's algorithm on the $x_i$-sequence to detect whether it has entered a cycle. Now we are finally ready to describe the entire Pollard's Rho algorithm.
+
+\begin{algo} (Pollard's Rho algorithm)
+
+The integer to be factored is $n$ and function used to generate the pseudorandom sequence is $f$.
+\begin{enumerate}
+\item Choose a starting value $s$ from range $1 \dots (n-1)$ and assign $t = f(s)$, $h = f(f(s))$.
+\item While $\gcd(h-t, n) = 1$, repeat $t = f(t)$, $h = f(f(h))$.
+\item If at this point $t = h$, the algorithm failed to find a factor. Start from beginning with a different $s$.
+\item Otherwise we found a factor $\gcd(h-t, n)$, return it.
+\end{enumerate}
+\end{algo}
+
+There are some special cases that are important to notice.
+
+\begin{itemize}
+\item If $n$ is prime, the algorithm might not terminate.
+\item If $n$ is a perfect square ($n = m^2$ for some integer m), the algorithm might not terminate.
+\end{itemize}
+
 \subsection {Implementation}
 
 \section {Linear sieve}
-
-\section {References}
 
 \printbibliography
 
