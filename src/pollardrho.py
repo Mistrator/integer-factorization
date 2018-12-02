@@ -6,7 +6,7 @@ def pollard_rho(n):
 	if n%2 == 0:
 		return 2
 
-	# note precision issues here
+	# pay attention to precision issues here
 	# it's recommended to only use integers
 	if is_square(n):
 		return sqrt(n)
@@ -22,3 +22,7 @@ def pollard_rho(n):
 		res = gcd(h-t, n)
 		if res != n:
 			return res
+
+	# should only happen if the algorithm fails due to
+	# the choice of the polynomial
+	return -1
