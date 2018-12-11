@@ -19,6 +19,7 @@
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{lemma}[thm]{Lemma}
 \newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
 
 \theoremstyle{definition}
 \newtheorem{defn}[thm]{Definition}
@@ -119,7 +120,7 @@ The time complexity of this algorithm is still $O(\sqrt{n})$, but it has a small
 
 \section {Pollard's Rho algorithm}
 
-Pollard's Rho algorithm is a randomized Monte Carlo algorithm that solves \textit{factor(n)} in $O(\sqrt[4]{n})$ average.
+Pollard's Rho algorithm is a randomized Monte Carlo algorithm that solves \textit{factor(n)} in $O(\sqrt[4]{n})$ average time and in $O(1)$ space. It was originally invented by John Pollard in 1975\cite{pollard}.
 
 \subsection {Theory}
 
@@ -133,7 +134,7 @@ Now we are on par with the trial division. To improve the algorithm further, we 
 
 \begin{prop} (Birthday paradox)
 \label {prop:birthdayparadox}
-When uniformly generating random integers $x_1, x_2, \dots, x_k$ from the range $1 \dots n$, we need to generate approximately $O(\sqrt{n})$ integers for the probability that two of the generated integers are equal to reach $0.5$.
+When randomly generating integers $x_1, x_2, \dots, x_k$ with a uniform distribution from the range $1 \dots n$, we need to generate approximately $O(\sqrt{n})$ integers for the probability that two of the generated integers are equal to reach $0.5$.
 \end{prop}
 
 \begin{proof}
@@ -198,9 +199,73 @@ There are some points that are important to notice.
 
 \subsection {Implementation}
 
+Implementation in Python 3.
+
 \lstinputlisting[language=Python]{src/pollardrho.py}
 
 \section {Linear sieve}
+
+Linear sieve is a deterministic algorithm that solves \textit{factor-range(n)} in $O(n)$ time and space. It was originally invented by Gries and Misra in 1978\cite{gries}.
+
+\subsection {Theory}
+
+What makes the sieve of Eratosthenes slightly inefficient is that many composite numbers are marked as such multiple times. If we can find a way to process every composite number only once, we can get the time complexity down to $O(n)$.
+
+The main idea is that if we can find an unique representation for every composite integer, then we can generate every such representation only once.
+
+\begin{thm}
+\label {thm:comprepr}
+Every composite integer $a$ has an unique representation $a = px$, where $p$ is the smallest prime factor of $a$ and $x$ is an integer.
+\end{thm}
+
+\begin{proof}
+Proved in Gries' and Misra's paper\cite{gries}.
+\end{proof}
+
+\begin{cor}
+\label {cor:pflimit}
+$x \geq p$ and $x$ does not have prime factors that are smaller than $p$.
+\end{cor}
+
+\begin{proof}
+If $x < p$, $x$ is either prime or it must have a prime factor. In both cases the obtained prime is be smaller than $p$. However, $a = px$ and $p$ is the smallest prime factor of $a$. We have a contradiction.
+
+Also, when $x \geq p$ and $x$ has a prime factor smaller than $p$, we have the same contradiction again.
+\end{proof}
+
+We will denote the smallest prime factor of an integer $i$ as $sp(i)$. The linear sieve works as follows: instead of iterating all the integer multiples of $i$ up to the limit $n$, we will only iterate the representations $pi$: $2i$, $3i$, \dots , $p_ki$, where $p_k$ is the largest prime that is smaller or equal to $sp(i)$. We can't go any higher or we would violate Corollary \ref{cor:pflimit} and thus the uniqueness of the representation. 
+
+This way we will find a factor for every composite number, and every composite number is processed exactly once.
+
+\begin{proof}
+We have to prove that we will find a factor exactly once for every composite $a$.
+
+First we will prove that we will find a factor. Since $a$ is composite, it can be written as $a = px$ according to Theorem \ref{thm:comprepr}. We process the integers in ascending order, and since $x < a$, we have already processed $x$. While processing $x$, we marked all multiples $2x, 3x, \dots, sp(x)x$ as composite, and $px$ must have been one of these multiples, since according to Corollary \ref{cor:pflimit} $p \leq sp(x)$.
+
+We still have to prove that we will find a factor for $a$ only once. Let's assume that we can find a factor multiple times. From some integer $x$ we can mark $a$ as composite only once, since there is at most one positive integer solution $p$ for $a = px$. This means that we must also be able to write $a$ as $a = p'x'$ for some $x' \neq x$. However, according to Theorem \ref{thm:comprepr} the representation $a = px$ is unique, and thus we have a contradiction.
+\end{proof}
+
+\begin{algo} (Linear sieve)
+\begin{enumerate}
+\item Zero-initialize a $(n+1)$-element array \textit{sp} and create an empty list \textit{primes}.
+\item Set $sp(1) = 1$.
+\item Iterate all integers $i$ from 2 to $n$. For each integer $i$:
+\begin{enumerate}
+	\item If $sp(i)$ is still 0, $i$ is prime. Add $i$ to \textit{primes} and set $sp(i) = i$.
+	\item Iterate all integers $p \leq sp(i)$ in \textit{primes}. For each integer $p$:
+\begin{enumerate}
+		\item Set $sp(pi) = i$.
+\end{enumerate}
+\end{enumerate}
+\item Return the array \textit{sp}.
+\end{enumerate}
+\end{algo}
+
+\subsection {Implementation}
+
+Implementation in Python 3.
+
+\lstinputlisting[language=Python]{src/linearsieve.py}
 
 \printbibliography
 
