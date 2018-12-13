@@ -1,6 +1,6 @@
 def linear_sieve(n):
-	sp = (n+1)*[0]
-	primes = []
+	sp = (n+1)*[0] # zero-initialize a (n+1)-element array
+	primes = [] # initialize an empty list
 
 	sp[1] = 1
 	for i in range(2, n+1):
@@ -9,10 +9,8 @@ def linear_sieve(n):
 			primes.append(i)
 
 		for p in primes:
-			if p > sp[i]:
-				break
 			a = p*i
-			if a > n:
+			if p > sp[i] or a > n:
 				break
 			sp[a] = i
 
