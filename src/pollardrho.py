@@ -1,4 +1,5 @@
 def pollard_rho(n):
+	# Miller-Rabin, for example, can be used
 	if is_prime(n):
 		return -1
 
@@ -7,7 +8,7 @@ def pollard_rho(n):
 		return 2
 
 	# pay attention to floating-point precision issues
-	# it's recommended to only use integers
+	# it's recommended to implement these with integers
 	if is_square(n):
 		return sqrt(n)
 
@@ -23,4 +24,5 @@ def pollard_rho(n):
 		if res != n:
 			return res
 
+	# n is composite, but we failed to find a factor
 	return -1

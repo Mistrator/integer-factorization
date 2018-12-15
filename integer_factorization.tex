@@ -75,7 +75,7 @@ In practice we can handle the case where a factor does not exist by, for example
 
 \subsection {Applications}
 
-Many present-day cryptographic methods, such as the \textit{RSA} cryptosystem, depend on the assumption that integer factorization is hard for sufficiently large integers. It's currently unknown whether a non-quantum algorithm that can solve \textit{factor(n)} in polynomial time in relation to the bit length of $n$ exists\cite{stein}.
+Many present-day cryptographic methods, such as the RSA cryptosystem, depend on the assumption that integer factorization is hard for sufficiently large integers. It's currently unknown whether a non-quantum algorithm that can solve \textit{factor(n)} in polynomial time in relation to the bit length of $n$ exists\cite{stein}.
 
 If such algorithm was found, RSA would be rendered insecure, since the attacker would be able to derive the private key used for decryption simply by factoring a part of the public key. Currently we can just increase the key size to render factorization infeasible with known algorithms, but if a polynomial-time algorithm existed, the required key sizes to make factorization slow would likely be too large to be practical.
 
@@ -113,7 +113,7 @@ We can use Proposition \ref{prop:primes6pm1} to reduce the amount of required di
 \begin{algo} (Trial division)
 \begin{enumerate}
 \item Check if $2$ or $3$ divide $n$.
-\item Iterate all integers of the form $6k \pm 1$ up to and including $\sqrt{n}$ and check if one of them divides $n$.
+\item Iterate all positive integers of the form $6k \pm 1$ up to and including $\sqrt{n}$ and check if one of them divides $n$.
 \item If no divisor was found in steps 1 and 2, report that there are none.
 \end{enumerate}
 \end{algo}
@@ -282,7 +282,7 @@ We have to prove that we will find a factor exactly once for every composite $a$
 
 First we will prove that we will find a factor for $a$. Since $a$ is composite, it can be uniquely written as $a = px$ according to Theorem \ref{thm:comprepr}. We process the integers in ascending order, and since $x < a$, we have processed $x$ before processing $a$. While processing $x$, we marked all multiples $2x, 3x, \dots, sp(x) \cdot x$ as composite, and $px$ must have been one of these multiples, since according to Corollary \ref{cor:pflimit} $p \leq sp(x)$.
 
-We still have to prove that we will find a factor for $a$ only once. Let's assume that we can find a factor multiple times. From some integer $x$ we can mark $a$ as composite only once, since there is at most one positive integer solution $p$ for $a = px$. This means that we must also be able to write $a$ as $a = p'x'$ for some $x' \neq x$. However, according to Theorem \ref{thm:comprepr} the representation $a = px$ is unique, and thus we have a contradiction.
+We still have to prove that we will find a factor for $a$ only once. The representation $a = px$ is unique, so there is exactly one $x$ from which we can mark $a$ composite, and when processing $x$, we mark every multiple only once.
 \end{proof}
 
 \begin{algo} (Linear sieve)
